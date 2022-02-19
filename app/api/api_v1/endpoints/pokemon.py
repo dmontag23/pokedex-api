@@ -1,12 +1,13 @@
-from fastapi import APIRouter, HTTPException
 from typing import Any
+
+from fastapi import APIRouter
 
 router = APIRouter()
 
 
 @router.get("/{pokemon_name}")
 def get_pokemon_by_name(
-    pokemon_name: str,
+        pokemon_name: str,
 ) -> Any:
     """
     Fetch a single pokemon by its name
@@ -18,7 +19,7 @@ def get_pokemon_by_name(
 
 @router.get("/translated/{pokemon_name}")
 def get_pokemon_by_name_translated(
-    pokemon_name: str,
+        pokemon_name: str,
 ) -> Any:
     """
     Fetch a single pokemon by its name and translate its description

@@ -8,5 +8,6 @@ from app.main import app
 @pytest.fixture(scope="module")
 def base_app_client():
     client = TestClient(app)
-    # client.base_url += settings.API_V1_STR  -- this would be set if using api versioning
+    # the following line would be set if using api versioning
+    # client.base_url += settings.API_V1_STR
     yield client
