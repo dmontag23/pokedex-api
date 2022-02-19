@@ -17,6 +17,8 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # Copy code after installing dependencies to best utilize Docker cache
 COPY ./app ./app
 
-# Create a user that can only run apps for security purposes
-RUN adduser -D user
-USER user
+# For a production image, I would create a user that can only run apps for security purposes as shown below
+# This is commented out for dev purposes - pytest will throwing un-suppressible warnings if it can't
+# create and write to a cache
+#RUN adduser -D user
+#USER user
