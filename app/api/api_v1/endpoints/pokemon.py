@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.core.config import settings
 from app.core.logger import logger
@@ -48,22 +48,40 @@ async def translate_pokemon_description(
         text=original_pokemon.description
     ).json()
 
+    pokemon_to_return: Pokemon = original_pokemon.copy()
+
     # get the response from the translations api
     # and translate it into a schema object
-    response = await send_request(
-        f"{settings.FUN_TRANSLATIONS_API_URL}/{path}",
-        "POST",
-        translation_payload
-    )
-    logger.debug("Response status code from fun "
-                 f"translations client is {response.status_code}")
-    logger.debug("Response json from fun "
-                 f"translations client is {response.json()}")
-    translation_data = TranslationsExtResponse(**response.json())
+    # if there is an exception, use the standard description
+    try:
+        response = await send_request(
+            f"{settings.FUN_TRANSLATIONS_API_URL}/{path}",
+            "POST",
+            translation_payload
+        )
 
-    # return a new pokemon with the modified description
-    pokemon_to_return = original_pokemon.copy()
-    pokemon_to_return.description = translation_data.contents.translated
+        logger.debug(
+            "Response status code from fun "
+            f"translations client is {response.status_code}"
+        )
+        logger.debug(
+            "Response json from fun "
+            f"translations client is {response.json()}"
+            f"")
+
+        translation_data = TranslationsExtResponse(**response.json())
+        pokemon_to_return.description = translation_data.contents.translated
+
+    except HTTPException as err:
+        logger.error(
+            f"There was an error calling "
+            f"{settings.FUN_TRANSLATIONS_API_URL}/{path}: {err.detail}"
+        )
+
+        logger.info(
+            "Setting translated description to original pokemon description"
+        )
+
     return pokemon_to_return
 
 

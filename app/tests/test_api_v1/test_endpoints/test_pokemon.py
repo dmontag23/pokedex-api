@@ -129,14 +129,16 @@ async def test_get_pokemon_object(respx_mock) -> None:
     ]
 )
 @pytest.mark.asyncio
-async def test_translate_pokemon_description(
+async def test_translate_pokemon_description_with_success_api_call(
         input_pokemon: Pokemon,
         mock_fun_translation_url_suffix: str,
         mock_fun_translation_response: dict[str, str],
         expected_pokemon: Pokemon,
         respx_mock
 ) -> None:
-    """Test translating a pokemon's description"""
+    """
+    Test translating a pokemons description when the external api call succeeds
+    """
 
     # setup mock url
     mocked_fun_translations_api_post_route = respx_mock.post(
@@ -156,6 +158,40 @@ async def test_translate_pokemon_description(
     assert pokemon.description == expected_pokemon.description
     assert pokemon.habitat == expected_pokemon.habitat
     assert pokemon.isLegendary == expected_pokemon.isLegendary
+
+
+@pytest.mark.asyncio
+async def test_translate_pokemon_description_with_failed_api_call(
+        respx_mock
+) -> None:
+    """
+    Test using a pokemons original description when the external api call fails
+    """
+
+    input_pokemon = Pokemon(
+        name="mewtwo",
+        description="It was created by a scientist after years "
+                    "of horrific gene splicing and DNA "
+                    "engineering experiments.",
+        habitat="rare",
+        isLegendary="true")
+
+    # setup mock url
+    mocked_fun_translations_api_post_route = respx_mock.post(
+        f"{settings.FUN_TRANSLATIONS_API_URL}/yoda") \
+        .mock(
+        return_value=Response(
+            status_code=429
+        ))
+
+    pokemon = await translate_pokemon_description(input_pokemon)
+
+    assert mocked_fun_translations_api_post_route.called
+    assert mocked_fun_translations_api_post_route.call_count == 1
+    assert pokemon.name == input_pokemon.name
+    assert pokemon.description == input_pokemon.description
+    assert pokemon.habitat == input_pokemon.habitat
+    assert pokemon.isLegendary == input_pokemon.isLegendary
 
 
 @pytest.mark.asyncio
