@@ -2,13 +2,13 @@ from typing import Any
 
 from fastapi import APIRouter
 
+from app.core.config import settings
 from app.core.logger import logger
 from app.schemas.fun_translations_api_ext \
     import TranslationsExtCreate, TranslationsExtResponse
 from app.schemas.poke_api_ext import PokemonExtResponse
 from app.schemas.pokemon import Pokemon
-from app.utils.external_api_clients \
-    import FunTranslationsAPIClient, PokeAPIClient
+from app.utils.external_api_clients import send_request
 from app.utils.mappers import map_pokemon_ext_response_to_pokemon
 
 router = APIRouter()
@@ -17,7 +17,10 @@ router = APIRouter()
 async def get_pokemon_object(name: str) -> Pokemon:
     """Gets a pokemon by its name"""
     logger.debug(f"Called get_pokemon_object with name {name}")
-    response = await PokeAPIClient.send_request(f"pokemon-species/{name}")
+    response = await send_request(
+        f"{settings.POKE_API_URL}/pokemon-species/{name}",
+        "GET"
+    )
     logger.debug("Response status code from poke api client is "
                  f"{response.status_code}")
     logger.debug("Response json from poke api client is "
@@ -47,8 +50,9 @@ async def translate_pokemon_description(
 
     # get the response from the translations api
     # and translate it into a schema object
-    response = await FunTranslationsAPIClient.send_request(
-        f"{path}",
+    response = await send_request(
+        f"{settings.FUN_TRANSLATIONS_API_URL}/{path}",
+        "POST",
         translation_payload
     )
     logger.debug("Response status code from fun "
