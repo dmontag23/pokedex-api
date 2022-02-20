@@ -2,6 +2,7 @@ from typing import Any
 
 from fastapi import APIRouter
 
+from app.core.logger import logger
 from app.schemas.fun_translations_api_ext \
     import TranslationsExtCreate, TranslationsExtResponse
 from app.schemas.poke_api_ext import PokemonExtResponse
@@ -15,15 +16,26 @@ router = APIRouter()
 
 async def get_pokemon_object(name: str) -> Pokemon:
     """Gets a pokemon by its name"""
+    logger.debug(f"Called get_pokemon_object with name {name}")
     response = await PokeAPIClient.send_request(f"pokemon-species/{name}")
+    logger.debug("Response status code from poke api client is "
+                 f"{response.status_code}")
+    logger.debug("Response json from poke api client is "
+                 f"{response.json()}")
     pokemon_data = map_pokemon_ext_response_to_pokemon(
         PokemonExtResponse(**response.json())
     )
     return pokemon_data
 
 
-async def translate_pokemon_description(original_pokemon: Pokemon) -> Pokemon:
+async def translate_pokemon_description(
+        original_pokemon: Pokemon
+) -> Pokemon:
     """Returns the pokemon provided but with a translated description"""
+
+    logger.debug("Called translate_pokemon_description with pokemon"
+                 f" {original_pokemon.json()}")
+
     # construct the request to the translations api
     path = "yoda" \
         if original_pokemon.habitat == "cave" \
@@ -39,6 +51,10 @@ async def translate_pokemon_description(original_pokemon: Pokemon) -> Pokemon:
         f"{path}",
         translation_payload
     )
+    logger.debug("Response status code from fun "
+                 f"translations client is {response.status_code}")
+    logger.debug("Response json from fun "
+                 f"translations client is {response.json()}")
     translation_data = TranslationsExtResponse(**response.json())
 
     # return a new pokemon with the modified description
@@ -54,6 +70,7 @@ async def get_pokemon_by_name(
     """
     Fetch a single pokemon by its name
     """
+    logger.info(f"Called /{pokemon_name} endpoint")
     pokemon = await get_pokemon_object(pokemon_name)
     return pokemon
 
@@ -65,6 +82,7 @@ async def get_pokemon_by_name_translated(
     """
     Fetch a single pokemon by its name and translate its description
     """
+    logger.info(f"Called translated/{pokemon_name} endpoint")
     pokemon = await get_pokemon_object(pokemon_name)
     pokemon_with_translated_description = \
         await translate_pokemon_description(pokemon)

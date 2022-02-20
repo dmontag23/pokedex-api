@@ -4,6 +4,7 @@ import httpx
 from pydantic import Json
 
 from app.core.config import settings
+from app.core.logger import logger
 
 
 class PokeAPIClient:
@@ -12,6 +13,8 @@ class PokeAPIClient:
     @classmethod
     async def send_request(cls, endpoint: str) -> Any:
         async with httpx.AsyncClient(base_url=cls.base_url) as client:
+            logger.info("Attempting to get pokemon data from "
+                        f"{cls.base_url}/{endpoint}")
             return await client.get(f"/{endpoint}")
 
 
@@ -21,5 +24,7 @@ class FunTranslationsAPIClient:
     @classmethod
     async def send_request(cls, endpoint: str, payload: Json) -> Any:
         async with httpx.AsyncClient(base_url=cls.base_url) as client:
-            print("POSTING TO", f"{cls.base_url}/{endpoint}")
+            logger.info("Attempting to get translation data from "
+                        f"{cls.base_url}/{endpoint}")
+            logger.debug(f"The payload provided is {payload}")
             return await client.post(f"/{endpoint}", data=payload)
