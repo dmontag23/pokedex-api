@@ -61,7 +61,8 @@ There are many improvements that could be made to this api:
 - I would use a prefix like `/api/v1` to enable api versioning (the structure for this is already in place, but
   implementing it would mean that the api no longer conforms to the design document).
 - I would refactor the custom wrapper client in `app/utils/external_api_client`. Namely, I would implement better error
-  handling (e.g. use error schemas from the external apis and map those errors to my own custom error schema).
+  handling (e.g. use error schemas from the external apis and map those errors to my own custom error schema). This
+  would also automatically update the FastAPI docs to include error responses.
 - I would refactor the tests to make fixtures more reusable and reduce some duplicate code.
 - I would use the [semantic release](https://github.com/semantic-release/semantic-release) project to automatically
   create versions for the api based off of commit messages.
