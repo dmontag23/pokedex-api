@@ -10,7 +10,7 @@ from app.tests.fixtures.fun_translations_api_ext \
     import MEWTWO_YODA_JSON_RESPONSE
 from app.tests.fixtures.poke_api_ext \
     import POKEMON_SPECIES_MEWTWO_JSON_RESPONSE
-from app.utils.external_api_clients import send_request
+from app.utils.external_api_client import send_request
 
 
 @pytest.mark.parametrize(

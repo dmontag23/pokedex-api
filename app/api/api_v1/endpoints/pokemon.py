@@ -8,7 +8,7 @@ from app.schemas.fun_translations_api_ext \
     import TranslationsExtCreate, TranslationsExtResponse
 from app.schemas.poke_api_ext import PokemonExtResponse
 from app.schemas.pokemon import Pokemon
-from app.utils.external_api_clients import send_request
+from app.utils.external_api_client import send_request
 from app.utils.mappers import map_pokemon_ext_response_to_pokemon
 
 router = APIRouter()
