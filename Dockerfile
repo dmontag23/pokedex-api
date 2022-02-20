@@ -5,7 +5,7 @@ FROM python:3.10.2-alpine
 ENV PYTHONUNBUFFERED 1
 
 # Prevent python from writing bytecode files to disk
-# Improve performance and keeps development env clean
+# Improves performance and keeps development env clean
 ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /pokedex-api
