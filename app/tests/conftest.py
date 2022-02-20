@@ -1,13 +1,10 @@
-import pytest
-from fastapi.testclient import TestClient
+import pytest_asyncio
+from httpx import AsyncClient
 
 from app.main import app
 
 
-# set up the client to send requests to our api
-@pytest.fixture(scope="module")
-def base_app_client():
-    client = TestClient(app)
-    # the following line would be set if using api versioning
-    # client.base_url += settings.API_V1_STR
-    yield client
+@pytest_asyncio.fixture
+async def async_app_client():
+    async with AsyncClient(app=app, base_url='http://test') as client:
+        yield client

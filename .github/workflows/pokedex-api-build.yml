@@ -10,4 +10,4 @@ jobs:
         run: docker-compose run pokedex-api sh -c "flake8"
 
       - name: Run Tests
-        run: docker-compose run pokedex-api sh -c "pytest"
+        run: docker-compose run pokedex-api sh -c "pytest --cov -W ignore::DeprecationWarning"
