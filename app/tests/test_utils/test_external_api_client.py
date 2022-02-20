@@ -33,13 +33,15 @@ from app.utils.external_api_client import send_request
         )]
 )
 @pytest.mark.asyncio
-async def test_send_request_success(
+async def test_client_wrapper_send_request_success(
         url: str,
         method: str,
         return_value: Response,
         respx_mock
 ) -> None:
-    """Test that the client wrapper is working as expected"""
+    """
+    Test that the client wrapper can successfully send a request
+    """
     # setup mock url
     mocked_api_route = eval(
         f"respx_mock.{method.lower()}(url).mock(return_value)"
@@ -72,7 +74,7 @@ async def test_send_request_success(
         )]
 )
 @pytest.mark.asyncio
-async def test_poke_api_client_fails_on_exception(
+async def test_client_wrapper_send_request_fails_on_exception(
         url: str,
         method: str,
         text: str,
@@ -108,7 +110,7 @@ async def test_poke_api_client_fails_on_exception(
 
 
 @pytest.mark.asyncio
-async def test_poke_api_client_fails_on_method_not_implemented(
+async def test_client_wrapper_send_request_fails_on_method_not_implemented(
         respx_mock
 ) -> None:
     """
@@ -117,17 +119,14 @@ async def test_poke_api_client_fails_on_method_not_implemented(
     """
 
     # setup mock url
-    url_to_mock = f"{settings.POKE_API_URL}/pokemon-species/mewtwo"
-    mocked_poke_api_get_route = respx_mock.patch(url_to_mock).mock(
+    url = f"{settings.POKE_API_URL}/pokemon-species/mewtwo"
+    mocked_poke_api_get_route = respx_mock.patch(url).mock(
         side_effect=HTTPException(status_code=404, detail="Not Found")
     )
 
     # call the client
     with pytest.raises(HTTPException) as err:
-        await send_request(
-            f"{settings.POKE_API_URL}/pokemon-species/mewtwo",
-            "PATCH"
-        )
+        await send_request(url, "PATCH")
 
     assert not mocked_poke_api_get_route.called
     assert err.value.status_code == 405

@@ -31,11 +31,11 @@ async def send_request(
             logger.error(f"Method {method} is not currently implemented")
             raise HTTPException(
                 status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-                detail=f"The client does not yet support the"
-                       f" {method} method"
+                detail=f"The client does not yet support the "
+                       f"{method} method"
             )
 
-        # build client call - ideally would also store response in cache
+        # build client call
         suffix = ")" if method == "GET" else ", data=payload)"
         response: Response = await eval(
             f"client.{method.lower()}(url{suffix}"
@@ -47,6 +47,12 @@ async def send_request(
         if not response.is_success:
             logger.error(f"Error calling {response.url}: "
                          f"Response is {response.text}")
+
+            # the following try/except attempts to get the error message
+            # from the client.
+            # it assumes the error is returned in the form:
+            # {"error": {"message": "this is the error message"}}
+            # which is what fun translations api errors return
             try:
                 error_message = json.loads(response.text)
                 logger.info("Json converted error message "
@@ -56,6 +62,7 @@ async def send_request(
                 logger.info("Could not convert error "
                             "from external api to json")
                 error_message = response.text
+
             raise HTTPException(
                 status_code=response.status_code,
                 detail=f"Error when calling {response.url}: "

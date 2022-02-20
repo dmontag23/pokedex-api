@@ -82,7 +82,8 @@ async def test_get_pokemon_object(respx_mock) -> None:
                                 "engineering experiments.",
                     habitat="rare",
                     isLegendary="true"),
-                "yoda", MEWTWO_YODA_JSON_RESPONSE,
+                "yoda",
+                MEWTWO_YODA_JSON_RESPONSE,
                 Pokemon(
                     name="mewtwo",
                     description="Created by a scientist after years of "
@@ -99,7 +100,8 @@ async def test_get_pokemon_object(respx_mock) -> None:
                                 "lightning storms.",
                     habitat="forest",
                     isLegendary="false"),
-                "shakespeare", PIKACHU_SHAKESPEARE_JSON_RESPONSE,
+                "shakespeare",
+                PIKACHU_SHAKESPEARE_JSON_RESPONSE,
                 Pokemon(
                     name="pikachu",
                     description="At which hour several of these pokémon "
@@ -116,7 +118,8 @@ async def test_get_pokemon_object(respx_mock) -> None:
                                 "approach targets.",
                     habitat="cave",
                     isLegendary="false"),
-                "yoda", ZUBAT_YODA_JSON_RESPONSE,
+                "yoda",
+                ZUBAT_YODA_JSON_RESPONSE,
                 Pokemon(
                     name="zubat",
                     description="Forms colonies in perpetually dark places. "
@@ -199,7 +202,7 @@ async def test_get_pokemon_by_name_success(
         async_app_client,
         respx_mock
 ) -> None:
-    """Test the pokemon/<pokemon name> endpoint is working as expected"""
+    """Test the pokemon/<pokemon name> endpoint returns a pokemon"""
 
     pokemon_name = "mewtwo"
     expected_returned_data = {
@@ -270,7 +273,7 @@ async def test_get_pokemon_by_name_translated_success(
 ) -> None:
     """
     Test the pokemon/translated/<pokemon name> endpoint
-    is working as expected
+    returns a pokemon
     """
 
     # setup mock urls
@@ -278,6 +281,7 @@ async def test_get_pokemon_by_name_translated_success(
         f"{settings.POKE_API_URL}/pokemon-species/{pokemon_name}") \
         .mock(return_value=Response(status_code=200,
                                     json=mock_poke_api_response))
+
     mocked_fun_translations_api_post_route = respx_mock.post(
         f"{settings.FUN_TRANSLATIONS_API_URL}"
         f"/{mock_fun_translation_url_suffix}") \

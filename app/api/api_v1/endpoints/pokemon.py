@@ -17,18 +17,20 @@ router = APIRouter()
 async def get_pokemon_object(name: str) -> Pokemon:
     """Gets a pokemon by its name"""
     logger.debug(f"Called get_pokemon_object with name {name}")
+
     response = await send_request(
-        f"{settings.POKE_API_URL}/pokemon-species/{name}",
-        "GET"
+        f"{settings.POKE_API_URL}/pokemon-species/{name}", "GET"
     )
+
     logger.debug("Response status code from poke api client is "
                  f"{response.status_code}")
     logger.debug("Response json from poke api client is "
                  f"{response.json()}")
-    pokemon_data = map_pokemon_ext_response_to_pokemon(
+
+    pokemon = map_pokemon_ext_response_to_pokemon(
         PokemonExtResponse(**response.json())
     )
-    return pokemon_data
+    return pokemon
 
 
 async def translate_pokemon_description(
@@ -44,7 +46,7 @@ async def translate_pokemon_description(
         if original_pokemon.habitat == "cave" \
            or original_pokemon.isLegendary == "true" \
         else "shakespeare"
-    translation_payload = TranslationsExtCreate(
+    translation_payload: dict[str, str] = TranslationsExtCreate(
         text=original_pokemon.description
     ).json()
 
@@ -67,7 +69,7 @@ async def translate_pokemon_description(
         logger.debug(
             "Response json from fun "
             f"translations client is {response.json()}"
-            f"")
+        )
 
         translation_data = TranslationsExtResponse(**response.json())
         pokemon_to_return.description = translation_data.contents.translated
@@ -104,7 +106,7 @@ async def get_pokemon_by_name_translated(
     """
     Fetch a single pokemon by its name and translate its description
     """
-    logger.info(f"Called translated/{pokemon_name} endpoint")
+    logger.info(f"Called /translated/{pokemon_name} endpoint")
     pokemon = await get_pokemon_object(pokemon_name)
     pokemon_with_translated_description = \
         await translate_pokemon_description(pokemon)

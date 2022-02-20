@@ -6,14 +6,14 @@ from app.utils.mappers import map_pokemon_ext_response_to_pokemon
 
 def test_map_pokemon_ext_response_to_pokemon() -> None:
     """Test mapping PokemonExtResponse -> Pokemon"""
-    pikachu_pokemon_species_display = \
+    pikachu_pokemon_ext_response = \
         PokemonExtResponse(**POKEMON_SPECIES_PIKACHU_JSON_RESPONSE)
-    pikachu_pokemon_display = \
-        map_pokemon_ext_response_to_pokemon(pikachu_pokemon_species_display)
+    pikachu_pokemon = \
+        map_pokemon_ext_response_to_pokemon(pikachu_pokemon_ext_response)
 
-    assert pikachu_pokemon_display.name == "pikachu"
-    assert pikachu_pokemon_display.description == \
+    assert pikachu_pokemon.name == "pikachu"
+    assert pikachu_pokemon.description == \
            "When several of these POKéMON gather, " \
            "their electricity could build and cause lightning storms."
-    assert pikachu_pokemon_display.habitat == "forest"
-    assert pikachu_pokemon_display.isLegendary == 'false'
+    assert pikachu_pokemon.habitat == "forest"
+    assert pikachu_pokemon.isLegendary == 'false'
