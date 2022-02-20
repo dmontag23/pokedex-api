@@ -22,7 +22,8 @@ async def send_request(
     """
 
     async with AsyncClient() as client:  # noqa
-        logger.debug(f"The payload provided is {payload}")
+        logger.debug("The payload provided to the wrapper client "
+                     f"when calling {url} is {payload}")
 
         # check currently implemented methods
         implemented_methods = ["GET", "POST"]
