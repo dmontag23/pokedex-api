@@ -84,7 +84,10 @@ async def test_fun_translations_api_client_success(respx_mock) -> None:
 
 @pytest.mark.asyncio
 async def test_fun_translations_api_client_fails(respx_mock) -> None:
-    """Test that the FunTranslationsAPIClient raises an exception when an error occurs"""
+    """
+    Test that the FunTranslationsAPIClient raises
+    an exception when an error occurs
+    """
 
     # setup mock url
     url_to_mock = f"{settings.FUN_TRANSLATIONS_API_URL}/yoda"
@@ -94,7 +97,10 @@ async def test_fun_translations_api_client_fails(respx_mock) -> None:
 
     # call the client
     with pytest.raises(HTTPException) as err:
-        await FunTranslationsAPIClient.send_request("yoda", payload=MEWTWO_YODA_JSON_REQUEST)
+        await FunTranslationsAPIClient.send_request(
+            "yoda",
+            payload=MEWTWO_YODA_JSON_REQUEST
+        )
 
     request, response = respx.calls.last
     assert mocked_poke_api_get_route.called

@@ -41,7 +41,10 @@ class FunTranslationsAPIClient:
                         f"{cls.base_url}/{endpoint}")
             logger.debug(f"The payload provided is {payload}")
 
-            response: Response = await client.post(f"/{endpoint}", data=payload)
+            response: Response = await client.post(
+                f"/{endpoint}",
+                data=payload
+            )
 
             if not response.is_success:
                 logger.error(f"Error calling {response.url}: "
@@ -50,7 +53,8 @@ class FunTranslationsAPIClient:
                     error_message = json.loads(response.text)
                     error_message = error_message.get('error').get('message')
                 except ValueError:
-                    logger.info("Could not convert error from external api to json")
+                    logger.info("Could not convert error "
+                                "from external api to json")
                     error_message = response.text
                 raise HTTPException(
                     status_code=response.status_code,
