@@ -4,11 +4,11 @@ from httpx import Response
 
 from app.core.config import settings
 from app.tests.fixtures.fun_translations_api_ext \
-    import MEWTWO_YODA_JSON_RESPONSE, MEWTWO_YODA_JSON_REQUEST
+    import MEWTWO_YODA_JSON_REQUEST, MEWTWO_YODA_JSON_RESPONSE
 from app.tests.fixtures.poke_api_ext \
     import POKEMON_SPECIES_MEWTWO_JSON_RESPONSE
 from app.utils.external_api_clients \
-    import PokeAPIClient, FunTranslationsAPIClient
+    import FunTranslationsAPIClient, PokeAPIClient
 
 
 @pytest.mark.asyncio
